@@ -401,7 +401,7 @@ const config = {
   publish_mode: 'editorial_workflow',
   media_folder: '/static/Images', // Media files will be stored in the repo under static/Images
   public_folder: '/Images', // The src attribute for uploaded media will begin with /Images
-  site_url: 'https://axway-open-docs.netlify.com/', // for fork testing use https://fork-axway-open-docs.netlify.com/
+  site_url: 'https://amplifycentral-open-docs.netlify.app/', // for fork testing use https://fork-axway-open-docs.netlify.com/
   collections,
 };
 
