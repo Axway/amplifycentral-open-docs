@@ -395,7 +395,7 @@ const collections = [{
 const config = {
   backend: {
     name: 'github',
-    repo: 'Axway/axway-open-docs', //Path to your GitHub repository. For fork testing use alexearnshaw/axway-open-docs.
+    repo: 'Axway/amplifycentral-open-docs', //Path to your GitHub repository. For fork testing use alexearnshaw/axway-open-docs.
     open_authoring: true,
   },
   publish_mode: 'editorial_workflow',
