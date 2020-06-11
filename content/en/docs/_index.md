@@ -1,6 +1,6 @@
 ---
-title: "Welcome to Axway Open Documentation"
-linkTitle: "Documentation"
+title: "Welcome to AMPLIFY Central Documentation"
+linkTitle: "AMPLIFY Central Documentation"
 weight: 20
 no_list: true
 menu:
