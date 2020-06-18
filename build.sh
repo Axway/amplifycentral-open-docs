@@ -24,7 +24,7 @@ PROJECT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 BUILD_DIR=${PROJECT_DIR}/build
 
 function fCheckout() {
-    echo "[INFO] Makes sure themes/docsy is checked out."
+    echo "[INFO] Makes sure [themes/docsy] submodule is checked out."
 	cd ${PROJECT_DIR}/themes/docsy
 	git submodule update -f --init --recursive
 	cd ${PROJECT_DIR}
@@ -36,17 +36,22 @@ function fCheckout() {
     		sudo npm install -D --save postcss-cli
     	fi
     fi
-    echo "[INFO] Clean the [build] directory."
-	rm -rf build
-    echo "[INFO] Clone [axway-open-docs-common] to the [build] directory."
-	git clone git@github.com:Axway/axway-open-docs-common.git build
+    echo "[INFO] Makes sure [axway-open-docs-common] submodule is checked out."
+    cd ${PROJECT_DIR}/axway-open-docs-common
+    git submodule update -f --init
 }
 
 function fMergeContent() {
     cd ${PROJECT_DIR}
+    echo "[INFO] Put all [axway-open-docs-common] content into [build] directory."
+    rsync -a axway-open-docs-common/ build --exclude .git
+    if [[ $? -ne 0 ]];then
+        echo "[ERROR] Looks like rsync failed!"
+        exit 1
+    fi
     echo "[INFO] Merging local content with the [axway-open-docs-common] files."
     echo "[INFO] Note that local content will override common content!"
-    for xxx in `ls -1 | grep -v "^build$\|^build.sh$"`;do
+    for xxx in `ls -1 | grep -v "^build$\|^build.sh$\|^axway-open-docs-common$"`;do
         echo "[INFO]    - copying [${xxx}]"
         cp -rf $xxx ${BUILD_DIR}
     done
