@@ -50,7 +50,7 @@ function fMergeContent() {
         exit 1
     fi
     echo "[INFO] Merging local content with the [axway-open-docs-common] files."
-    echo "[INFO] Note that local content will override common content!"
+    echo "[INFO] Note that local content will override [axway-open-docs-common] content!"
     for xxx in `ls -1 | grep -v "^build$\|^build.sh$\|^axway-open-docs-common$"`;do
         echo "[INFO]    - copying [${xxx}]"
         cp -rf $xxx ${BUILD_DIR}
