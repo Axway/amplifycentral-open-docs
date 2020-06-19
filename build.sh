@@ -60,7 +60,9 @@ function fMergeContent() {
 function fRunHugo() {
     cd ${PROJECT_DIR}
     # this link is needed because netlify publish direcoty only works with public even when it's changed
+    set -
     ln -s ${BUILD_DIR}/public public
+    set +
     cd ${BUILD_DIR}
     mkdir public
     ln -s 
