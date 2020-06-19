@@ -60,12 +60,9 @@ function fMergeContent() {
 function fRunHugo() {
     cd ${PROJECT_DIR}
     # this link is needed because netlify publish direcoty only works with public even when it's changed
-    set -x
     ln -s ${BUILD_DIR}/public public
-    set +x
     cd ${BUILD_DIR}
     mkdir public
-    ln -s 
     case "${MODE}" in
         "dev") hugo server
             ;;
@@ -74,6 +71,7 @@ function fRunHugo() {
         "nelify-preview") hugo -b $DEPLOY_PRIME_URL 
             ;;
     esac
+    ls -al ${PROJECT_DIR}/public
 }
 fCheckout
 fMergeContent
