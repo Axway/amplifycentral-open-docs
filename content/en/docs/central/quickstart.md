@@ -2,10 +2,9 @@
 title: Get started with AMPLIFY Central
 linkTitle: Get started
 weight: 30
-date: 2019-07-30
+date: 2019-07-30T00:00:00.000Z
 description: Learn how to register your first API in AMPLIFY Central.
 ---
-
 *Estimated reading time*: 2 minutes
 
 ## Before you start
@@ -13,6 +12,8 @@ description: Learn how to register your first API in AMPLIFY Central.
 * Read [AMPLIFY Central overview](/docs/central/overview)
 * Read [Understand AMPLIFY Central concepts](/docs/central/fundamental_concepts)
 * Sign up for a free trial of AMPLIFY Central at [AMPLIFY platform](https://platform.axway.com/)
+
+  * test
 
 ## Objectives
 
