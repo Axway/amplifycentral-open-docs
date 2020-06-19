@@ -1,5 +1,5 @@
 ---
-title: Get started with AMPLIFY Central
+title: Get started with AMPLIFY Central Woop Woop
 linkTitle: Get started
 weight: 30
 date: 2019-07-30
