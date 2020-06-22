@@ -20,9 +20,9 @@ Pre-requisites:
 
 Run the provided shell script **build.sh**. This script will:
 1. make sure **themes/docsy/** submodule is checked out recursively
-1. makes sure the **axway-open-docs-common/** submodule is checked out
-1. makes sure the npm packages **postcss-cli** and **autoprefixer** are installed
-1. combines the **axway-open-docs-common** files with the **amplifycentral-open-docs** files and put them in a build folder
+1. make sure the **axway-open-docs-common/** submodule is checked out
+1. make sure the npm packages **postcss-cli** and **autoprefixer** are installed
+1. combine the **axway-open-docs-common** files with the **amplifycentral-open-docs** files and put them in a build folder
 1. runs **hugo server** from inside the build folder to build the site and the document site will be available on http://localhost:1313/
 
 
