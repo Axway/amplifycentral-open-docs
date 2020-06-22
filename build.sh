@@ -8,6 +8,7 @@
 #	and use hugo modules instead.
 #
 
+DEBUG=${DEBUG:-false}
 MODE=dev
 while getopts ":np" opt; do
     case ${opt} in
@@ -42,19 +43,62 @@ function fCheckout() {
 }
 
 function fMergeContent() {
+    IFS_SAVE="${IFS}"
+    IFS=$'\n'
+    local axway_common_name="axway-open-docs-common"
+    local _c_context
+    local _c_path
+    local _c_name
+    local _ln_opt='-sf'
     cd ${PROJECT_DIR}
-    echo "[INFO] Put all [axway-open-docs-common] content into [build] directory."
-    rsync -a axway-open-docs-common/ build --exclude .git
+    echo "[INFO] Put all [${axway_common_name}] content into [build] directory."
+    rsync -a ${axway_common_name}/ build --exclude .git
     if [[ $? -ne 0 ]];then
         echo "[ERROR] Looks like rsync failed!"
         exit 1
     fi
-    echo "[INFO] Merging local content with the [axway-open-docs-common] files."
-    echo "[INFO] Note that local content will override [axway-open-docs-common] content!"
-    for xxx in `ls -1 | grep -v "^build$\|^build.sh$\|^axway-open-docs-common$"`;do
-        echo "[INFO]    - copying [${xxx}]"
-        cp -rf $xxx ${BUILD_DIR}
+
+    if [[ "$DEBUG" == "true" ]];then
+        _ln_opt='-vsf'
+    fi
+
+    # static can't be a symlink
+    echo "[INFO] Merging [static] folder with [build/static/]!"
+    cp -rf static ${BUILD_DIR}
+    echo "[INFO] Creating symlinks for dynamic content!"
+    for xxx in `ls -1 | grep -v "^build$\|^build.sh$\|^${axway_common_name}$\|^static$"`;do
+        #echo "[INFO]    - processing [${xxx}]"
+        # takes care of any top level files/folder only in micro site and not in axway-open-docs-common
+        if [[ ! -e "${axway_common_name}/${xxx}" ]];then
+            ln ${_ln_opt} $(pwd)/${xxx} ${BUILD_DIR}/${xxx}
+        # takes care of all directories and files inside sub folders
+        elif [[ -d "${xxx}" ]];then
+            for sub_xxx in `diff -qr ${axway_common_name}/$xxx $xxx | grep -v "^Only in ${axway_common_name}[/\|:]"`;do
+
+                _c_context=`echo ${sub_xxx} | awk '{ print $1 }'`
+                if [[ "${_c_context}" == "Only" ]];then
+                    _c_path=`echo ${sub_xxx} | awk '{ print $3 }' | sed -e "s|:||g"`
+                    _c_name=`echo ${sub_xxx} | awk '{ print $4 }'`
+                    ln ${_ln_opt} $(pwd)/${_c_path}/${_c_name} ${BUILD_DIR}/${_c_path}/${_c_name}
+                else
+                    #echo "[DEBUG]   - ${sub_xxx}"
+                    #echo "[DEBUG]   - _c_context = ${_c_context}"
+                    #exit 1
+                    _c_path=`echo ${sub_xxx} | awk '{ print $4 }'`
+                    ln ${_ln_opt} $(pwd)/${_c_path} ${BUILD_DIR}/${_c_path}
+                fi
+            done
+        else
+            # takes care of all top level files
+            ln ${_ln_opt} $(pwd)/${xxx} ${BUILD_DIR}/${xxx}
+        fi
     done
+    echo "[INFO] Following symlinks were created:"
+    for xxx in `find $(basename ${BUILD_DIR}) -type l`;do
+        echo "[INFO]    |- ${xxx}"
+    done
+    echo "[INFO]"
+    IFS="${IFS_SAVE}"
 }
 
 function fRunHugo() {
