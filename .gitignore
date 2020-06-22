@@ -2,5 +2,6 @@
 public/
 resources/
 node_modules/
+build/
 tech-doc-hugo
 
