@@ -33,8 +33,8 @@ function fCheckout() {
     if [[ "${MODE}" == "dev" ]];then
         echo "[INFO] Check out required npm packages."
     	if [[ ! -d "node_modules" ]];then
-    		sudo npm install -D --save autoprefixer
-    		sudo npm install -D --save postcss-cli
+    		npm install -D --save autoprefixer
+    		npm install -D --save postcss-cli
     	fi
     fi
     echo "[INFO] Makes sure [axway-open-docs-common] submodule is checked out."
@@ -42,6 +42,12 @@ function fCheckout() {
     git submodule update -f --init
 }
 
+# fMergeContent:
+#  1. makes sure BUILD_DIR is clean
+#  2. copies axway-open-docs-common to BUILD_DIR
+#  3. copies all static content from micro site to BUILD_DIR
+#  3. create symlinks in BUILD_DIR to access all other micro site content
+#  4. list symlinks
 function fMergeContent() {
     IFS_SAVE="${IFS}"
     IFS=$'\n'
@@ -50,7 +56,12 @@ function fMergeContent() {
     local _c_path
     local _c_name
     local _ln_opt='-sf'
+    if [[ "$DEBUG" == "true" ]];then
+        _ln_opt='-vsf'
+    fi
+
     cd ${PROJECT_DIR}
+    rm -rf ${BUILD_DIR}
     echo "[INFO] Put all [${axway_common_name}] content into [build] directory."
     rsync -a ${axway_common_name}/ build --exclude .git
     if [[ $? -ne 0 ]];then
@@ -58,38 +69,33 @@ function fMergeContent() {
         exit 1
     fi
 
-    if [[ "$DEBUG" == "true" ]];then
-        _ln_opt='-vsf'
-    fi
-
-    # static can't be a symlink
+    # content in static folder can't be a symlink
     echo "[INFO] Merging [static] folder with [build/static/]!"
     cp -rf static ${BUILD_DIR}
     echo "[INFO] Creating symlinks for dynamic content!"
     for xxx in `ls -1 | grep -v "^build$\|^build.sh$\|^${axway_common_name}$\|^static$"`;do
-        #echo "[INFO]    - processing [${xxx}]"
         # takes care of any top level files/folder only in micro site and not in axway-open-docs-common
         if [[ ! -e "${axway_common_name}/${xxx}" ]];then
+            #echo "[DEBUG] 1"
             ln ${_ln_opt} $(pwd)/${xxx} ${BUILD_DIR}/${xxx}
         # takes care of all directories and files inside sub folders
         elif [[ -d "${xxx}" ]];then
             for sub_xxx in `diff -qr ${axway_common_name}/$xxx $xxx | grep -v "^Only in ${axway_common_name}[/\|:]"`;do
-
                 _c_context=`echo ${sub_xxx} | awk '{ print $1 }'`
                 if [[ "${_c_context}" == "Only" ]];then
                     _c_path=`echo ${sub_xxx} | awk '{ print $3 }' | sed -e "s|:||g"`
                     _c_name=`echo ${sub_xxx} | awk '{ print $4 }'`
+                    #echo "[DEBUG] 2"
                     ln ${_ln_opt} $(pwd)/${_c_path}/${_c_name} ${BUILD_DIR}/${_c_path}/${_c_name}
                 else
-                    #echo "[DEBUG]   - ${sub_xxx}"
-                    #echo "[DEBUG]   - _c_context = ${_c_context}"
-                    #exit 1
                     _c_path=`echo ${sub_xxx} | awk '{ print $4 }'`
+                    #echo "[DEBUG] 3"
                     ln ${_ln_opt} $(pwd)/${_c_path} ${BUILD_DIR}/${_c_path}
                 fi
             done
+        # takes care of all top level files
         else
-            # takes care of all top level files
+            #echo "[DEBUG] 4"
             ln ${_ln_opt} $(pwd)/${xxx} ${BUILD_DIR}/${xxx}
         fi
     done
