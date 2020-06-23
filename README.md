@@ -18,14 +18,15 @@ Pre-requisites:
 1. hugo extended v0.66.0
 1. npm
 
-Run the provided shell script **build.sh**. This script will:
-1. make sure **themes/docsy/** submodule is checked out recursively
-1. make sure the **axway-open-docs-common/** submodule is checked out
-1. make sure the npm packages **postcss-cli** and **autoprefixer** are installed
-1. combine the **axway-open-docs-common** files with the **amplifycentral-open-docs** files and put them in a build folder
-1. runs **hugo server** from inside the build folder to build the site and the document site will be available on http://localhost:1313/
+Run the provided shell script **build.sh** and it should build the site locally you can access using http://localhost:1313/.
 
 
+# Netlify Configurations
+
+After creating the micro site project on Netlify you need to configure Netlify to access **axway-open-docs-common/** since it's a private repo. To do this one will need to:
+1. go to site settings -> build and deploy -> continuous deployment
+1. click on the "generate public deploy key" button
+1. go to https://github.com/Axway/axway-open-docs-common/settings/keys and add in the generate key
 
 # Contribute
 
