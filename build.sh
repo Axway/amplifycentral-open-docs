@@ -1,11 +1,28 @@
 #!/bin/bash
 #
-# Description:
+# Intro:
 #	This is a workaround for managing common content and merging them with the
 #	microsite before doing a hugo build. The hugo modules should be used instead
 #	but the theme "docsy" is not compatible with it at the moment. Once "docsy"
 #	have been updated by the devs to work with hugo modules then we can abandon this
 #	and use hugo modules instead.
+#
+# Description:
+#   This is roughly the flow of the script:
+#     1. make sure "themes/docsy/"" submodule is checked out recursively
+#     2. make sure the "axway-open-docs-common/ submodule is checked out
+#     3. make sure the npm packages "postcss-cli" and "autoprefixer" are installed
+#     4. combine the "axway-open-docs-common" files with the "amplifycentral-open-docs"
+#        files and put them in the "build" folder
+#     5. runs "hugo server" from inside the build folder to build the site and the
+#        micro site will be available on http://localhost:1313/
+#
+# Notes:
+#   - static files can't be symlinked so if they are changed then you need to rerun
+#     the build script
+#   - all other files like content/en/ content will be picked up by hugo automatically
+#     if they change
+#   - 
 #
 
 DEBUG=${DEBUG:-false}
@@ -29,7 +46,7 @@ function fCheckout() {
 	cd ${PROJECT_DIR}/themes/docsy
 	git submodule update -f --init --recursive
 	cd ${PROJECT_DIR}
-    # the npm packages doesn't seem to be need on the netify build server...must be pre-installed globally
+    # the npm packages doesn't seem to be needed on the netify build server...this is just for developers
     if [[ "${MODE}" == "dev" ]];then
         echo "[INFO] Check out required npm packages."
     	if [[ ! -d "node_modules" ]];then
