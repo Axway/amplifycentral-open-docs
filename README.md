@@ -28,7 +28,7 @@ After creating the micro site project on Netlify you need to configure Netlify t
 1. click on the "generate public deploy key" button
 1. go to https://github.com/Axway/axway-open-docs-common/settings/keys and add in the generate key
 
-Note: the repo **axway-open-docs-common/** might not stay private so this is not needed
+Note: the repo **axway-open-docs-common/** might not stay private ... if so then this is not needed
 
 # Contribute
 
